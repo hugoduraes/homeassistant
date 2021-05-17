@@ -1,0 +1,64 @@
+homeassistant:
+  name: Casa
+  latitude: !secret home_latitude
+  longitude: !secret home_longitude
+  elevation: 82
+  unit_system: metric
+  temperature_unit: C
+  time_zone: !secret home_timezone
+  external_url: !secret hass_external_url
+  internal_url: !secret hass_internal_url
+  media_dirs:
+    movies: /movies
+    tvshows: /tvshows
+  auth_providers:
+#    - type: trusted_networks
+#      trusted_networks:
+#        - 192.168.10.0/16
+#      allow_bypass_login: true
+    - type: homeassistant
+
+default_config:
+
+http:
+  ssl_certificate: /ssl/fullchain.pem
+  ssl_key: /ssl/privkey.pem
+  ip_ban_enabled: true
+  login_attempts_threshold: 3
+
+zone:
+  - name: Escritório SF
+    latitude: !secret work_sf_latitude
+    longitude: !secret work_sf_longitude
+    radius: 100
+    icon: mdi:office-building
+  - name: School
+    latitude: !secret school_latitude
+    longitude: !secret school_longitude
+    radius: 100
+    icon: mdi:school
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+binary_sensor:
+  - platform: workday
+    country: PTE
+
+nest:
+  client_id: !secret nest_client_id
+  client_secret: !secret nest_client_secret
+  project_id: !secret nest_project_id
+  subscriber_id: !secret nest_subscriber_id
+
+homekit:
+  advertise_ip: 192.168.10.4
+  filter:
+    include_domains:
+      - climate
+      - cover
+      - light
+      - media_player
+      - switch
